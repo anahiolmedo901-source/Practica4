@@ -1,0 +1,21 @@
+# Entorno virtual
+venv/
+.venv/
+env/
+
+# Base de datos y secretos locales
+db.sqlite3
+.env
+tmp/
+
+# Python
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.pyo
+
+# Editor y sistema operativo
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
