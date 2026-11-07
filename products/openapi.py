@@ -40,15 +40,15 @@ SCHEMA = {
     },
     'paths': {
         '/api/v1/users/': {
-            'get': {'summary': 'Listar usuarios', 'security': [{'BearerAuth': []}], 'responses': {'200': {'description': 'Usuarios; nunca incluye contraseñas.'}}},
-            'post': {'summary': 'Registrar usuario', 'description': 'El password solo se acepta en la solicitud y nunca se devuelve.', 'requestBody': {'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/User'}}}}, 'responses': {'201': {'description': 'Usuario creado sin contraseña.'}}},
+            'get': {'summary': 'Listar usuarios (solo staff)', 'security': [{'BearerAuth': []}], 'responses': {'200': {'description': 'Usuarios; nunca incluye contraseñas.'}}},
+            'post': {'summary': 'Registrar usuario (público)', 'description': 'El password solo se acepta en la solicitud, se valida con las reglas de Django y nunca se devuelve.', 'requestBody': {'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/User'}}}}, 'responses': {'201': {'description': 'Usuario creado sin contraseña.'}}},
         },
         '/api/v1/users/{id}/': {
             'parameters': [{'name': 'id', 'in': 'path', 'required': True, 'schema': {'type': 'integer'}}],
-            'get': {'summary': 'Consultar usuario', 'security': [{'BearerAuth': []}], 'responses': {'200': {'description': 'Datos del usuario sin contraseña.'}}},
-            'put': {'summary': 'Editar usuario', 'description': 'La contraseña existente se conserva si se omite password.', 'security': [{'BearerAuth': []}], 'requestBody': {'content': {'application/json': {'schema': {'$ref': '#/components/schemas/User'}}}}, 'responses': {'200': {'description': 'Usuario actualizado sin contraseña.'}}},
-            'patch': {'summary': 'Editar parcialmente usuario', 'description': 'La contraseña existente se conserva si se omite password.', 'security': [{'BearerAuth': []}], 'requestBody': {'content': {'application/json': {'schema': {'$ref': '#/components/schemas/User'}}}}, 'responses': {'200': {'description': 'Usuario actualizado sin contraseña.'}}},
-            'delete': {'summary': 'Eliminar usuario', 'security': [{'BearerAuth': []}], 'responses': {'204': {'description': 'Usuario eliminado.'}}},
+            'get': {'summary': 'Consultar usuario (solo staff)', 'security': [{'BearerAuth': []}], 'responses': {'200': {'description': 'Datos del usuario sin contraseña.'}}},
+            'put': {'summary': 'Editar usuario (solo staff)', 'description': 'La contraseña existente se conserva si se omite password.', 'security': [{'BearerAuth': []}], 'requestBody': {'content': {'application/json': {'schema': {'$ref': '#/components/schemas/User'}}}}, 'responses': {'200': {'description': 'Usuario actualizado sin contraseña.'}}},
+            'patch': {'summary': 'Editar parcialmente usuario (solo staff)', 'description': 'La contraseña existente se conserva si se omite password.', 'security': [{'BearerAuth': []}], 'requestBody': {'content': {'application/json': {'schema': {'$ref': '#/components/schemas/User'}}}}, 'responses': {'200': {'description': 'Usuario actualizado sin contraseña.'}}},
+            'delete': {'summary': 'Eliminar usuario (solo staff)', 'security': [{'BearerAuth': []}], 'responses': {'204': {'description': 'Usuario eliminado.'}}},
         },
         '/api/v1/me/': {'get': {'summary': 'Consultar mis datos personales', 'security': [{'BearerAuth': []}], 'responses': {'200': {'description': 'Perfil autenticado sin contraseña.'}}}},
         '/api/token/': {'post': {'summary': 'Obtener token JWT', 'requestBody': {'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/Credentials'}}}}, 'responses': {'200': {'description': 'Tokens de acceso y actualización.'}}}},

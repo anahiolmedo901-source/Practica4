@@ -1,0 +1,33 @@
+:root {
+  font-family: "Inter", "Segoe UI", sans-serif;
+  color: #17352d;
+  background: #f5f7f2;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: #f5f7f2; }
+a { color: #176a50; }
+.site-header { display: flex; align-items: center; justify-content: space-between; padding: 18px clamp(20px, 6vw, 88px); background: #123b32; color: #fff; }
+.site-brand { color: #fff; font-size: 1.25rem; font-weight: 700; letter-spacing: .02em; }
+.site-brand:hover { color: #d1edcf; }
+.site-nav { display: flex; align-items: center; gap: 18px; }
+.site-nav a { color: #e8f3ea; }
+.site-main { width: min(1050px, calc(100% - 36px)); margin: 48px auto; }
+.hero, .panel { padding: clamp(28px, 6vw, 64px); border: 1px solid #e0e8dc; border-radius: 22px; background: #fff; box-shadow: 0 18px 48px rgba(18, 59, 50, .08); }
+.hero { background: linear-gradient(130deg, #fff 45%, #e4f2dc); }
+.hero h1 { max-width: 650px; font-size: clamp(2.2rem, 5vw, 4.2rem); line-height: 1.05; }
+.eyebrow { color: #267d5e; font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.auth-shell { min-height: calc(100vh - 72px); display: grid; place-items: center; padding: 28px 18px; }
+.auth-card { width: min(480px, 100%); padding: clamp(26px, 5vw, 48px); border: 1px solid #e0e8dc; border-radius: 22px; background: #fff; box-shadow: 0 18px 48px rgba(18, 59, 50, .1); }
+.auth-card h1 { margin: 0 0 8px; font-size: 2rem; }
+.auth-subtitle { margin: 0 0 28px; color: #64766d; }
+.auth-card .ui.input input { border-radius: 9px; background: #f7f9f5; }
+.ui.primary.button { border-radius: 9px; background: #176a50; }
+.auth-footnote { margin-top: 22px; text-align: center; color: #64766d; }
+.profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin: 28px 0; }
+.profile-item { padding: 18px; border-radius: 13px; background: #f4f8f1; overflow-wrap: anywhere; }
+.profile-item span { display: block; margin-bottom: 7px; color: #64766d; font-size: .85rem; }
+.loading-page { min-height: 100vh; display: grid; place-items: center; color: #64766d; }
+@media (max-width: 560px) { .site-header { align-items: flex-start; gap: 12px; flex-direction: column; } .site-nav { gap: 14px; } }

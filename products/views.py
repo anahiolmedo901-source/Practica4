@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -40,8 +40,8 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
     def get_permissions(self):
-        # El registro es público; las demás operaciones de administración requieren JWT.
-        return [AllowAny()] if self.action == 'create' else [IsAuthenticated()]
+        # El registro es público; la gestión completa de cuentas es solo para staff.
+        return [AllowAny()] if self.action == 'create' else [IsAdminUser()]
 
 
 class MyProfileView(RetrieveAPIView):
