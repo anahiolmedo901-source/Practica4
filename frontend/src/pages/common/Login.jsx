@@ -21,6 +21,7 @@ export function Login() {
       setServerError("");
       try {
         const { access } = await loginApi(values);
+        console.info("JWT de acceso obtenido correctamente.");
         await login(access);
         navigate("/dashboard", { replace: true });
       } catch (error) {

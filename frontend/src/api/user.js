@@ -9,3 +9,9 @@ export function registerApi(formData) {
 export function getMeApi(token) {
   return apiRequest("/api/v1/me/", { headers: { Authorization: `Bearer ${token}` } });
 }
+export function getSoapNumberApi(token, number) {
+  const query = new URLSearchParams({ numero: String(number) });
+  return apiRequest(`/api/v1/soap/numero-a-letras/?${query}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}

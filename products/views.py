@@ -4,6 +4,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveAPIView
+from rest_framework.views import APIView
+from rest_framework import serializers, status
 from django.http import JsonResponse
 from django.shortcuts import render
 
@@ -12,6 +14,7 @@ from .serializers import CategorySerializer, ProductSerializer, UserSerializer
 from .services import obtener_estrategia  # Importamos la lógica de descuentos
                                             # Agregada en services.py
 from .openapi import SCHEMA
+from .soap import SoapServiceError, number_to_words
 
 
 def swagger_schema(request):
@@ -50,6 +53,23 @@ class MyProfileView(RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class SoapNumberView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        query = serializers.IntegerField(min_value=0, max_value=4_294_967_295)
+        number = query.run_validation(request.query_params.get('numero'))
+        try:
+            result = number_to_words(number)
+        except SoapServiceError as error:
+            return Response({'detail': str(error)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        return Response({
+            'servicio': 'NumberConversion SOAP (DataAccess)',
+            'numero': number,
+            'resultado': result,
+        })
 
 
 # Endpoint Facade: precio final con descuento

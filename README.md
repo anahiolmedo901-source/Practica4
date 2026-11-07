@@ -1,6 +1,6 @@
 # Mercado Local API
 
-API REST desarrollada con Django y Django REST Framework para el catálogo de una tienda de productos locales. Incluye cuentas con inicio por correo electrónico, CRUD protegido de usuarios, consulta del perfil autenticado, JWT y Swagger.
+Aplicación de Mercado Local con Django REST Framework y React. Incluye cuentas con inicio por correo electrónico, JWT, perfil protegido, productos de muestra de una API de terceros, consumo SOAP desde Django y Swagger.
 
 ## Preparación local
 
@@ -37,6 +37,7 @@ Consulta [SECURITY.md](SECURITY.md) para las prácticas de configuración y repo
 - Datos del usuario autenticado: `GET /api/v1/me/`
 - Obtener token: `POST /api/token/` con `email` y `password`
 - Renovar token: `POST /api/token/refresh/`
+- Consumo SOAP desde Django: `GET /api/v1/soap/numero-a-letras/?numero=42` (requiere JWT)
 - Administración: `/admin/`
 - Cliente React: `http://localhost:5173/` (inicio), `/login`, `/register` y `/dashboard`
 
@@ -46,6 +47,30 @@ El frontend obtiene el JWT desde `/api/token/`, conserva únicamente el token de
 acceso durante la sesión del navegador y carga el perfil desde `/api/v1/me/`.
 El formulario de registro usa `/api/v1/users/`; no muestra ni registra
 contraseñas en la interfaz.
+
+El dashboard autenticado muestra el nombre del usuario, productos de muestra de
+DummyJSON y el resultado de la conversión `42` del servicio NumberConversion
+SOAP consumido por Django. Para probar el SOAP directamente desde PowerShell,
+inicia sesión de forma interactiva y consulta la ruta protegida:
+
+```powershell
+$email = Read-Host 'Correo registrado'
+$securePassword = Read-Host 'Contraseña' -AsSecureString
+$password = [Net.NetworkCredential]::new('', $securePassword).Password
+$body = @{ email = $email; password = $password } | ConvertTo-Json
+$jwt = Invoke-RestMethod -Method Post -Uri 'http://127.0.0.1:8000/api/token/' -ContentType 'application/json' -Body $body
+$result = Invoke-RestMethod -Uri 'http://127.0.0.1:8000/api/v1/soap/numero-a-letras/?numero=42' -Headers @{ Authorization = "Bearer $($jwt.access)" }
+$result | ConvertTo-Json
+Remove-Variable password, securePassword, jwt
+```
+
+Toma estas cuatro capturas: (1) login con la consola abierta; (2) dashboard
+protegido mostrando el nombre; (3) widget con productos externos ya cargados;
+(4) terminal con la respuesta JSON del endpoint Django SOAP. Para la captura 1,
+abre las herramientas de desarrollador (F12), pestaña Console, antes de iniciar
+sesión: aparecerá el mensaje de éxito, nunca el valor del token. El endpoint
+SOAP autenticado también está documentado en Swagger. Se requiere conexión a
+Internet para DummyJSON y DataAccess SOAP.
 
 ## Publicación en GitHub
 

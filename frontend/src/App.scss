@@ -29,5 +29,17 @@ a { color: #176a50; }
 .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin: 28px 0; }
 .profile-item { padding: 18px; border-radius: 13px; background: #f4f8f1; overflow-wrap: anywhere; }
 .profile-item span { display: block; margin-bottom: 7px; color: #64766d; font-size: .85rem; }
+.dashboard-widget { margin: 30px 0; padding: 22px; border: 1px solid #e0e8dc; border-radius: 16px; background: #fbfcf9; }
+.dashboard-widget h2 { margin: 4px 0 18px; font-size: 1.3rem; }
+.product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+.external-product { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 12px; border-radius: 12px; background: #fff; }
+.external-product img { width: 76px; height: 76px; flex: 0 0 76px; object-fit: cover; border-radius: 9px; background: #f4f8f1; }
+.external-product div { display: grid; gap: 5px; min-width: 0; }
+.external-product strong { line-height: 1.25; }
+.external-product span, .dashboard-widget small { color: #64766d; font-size: .85rem; }
+.external-product b { color: #176a50; }
+.soap-result { display: flex; align-items: baseline; gap: 14px; font-size: 1.15rem; }
+.soap-result strong { font-size: 2rem; }
+.soap-result span { color: #176a50; font-weight: 700; }
 .loading-page { min-height: 100vh; display: grid; place-items: center; color: #64766d; }
 @media (max-width: 560px) { .site-header { align-items: flex-start; gap: 12px; flex-direction: column; } .site-nav { gap: 14px; } }

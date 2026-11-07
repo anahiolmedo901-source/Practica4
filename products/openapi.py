@@ -51,6 +51,7 @@ SCHEMA = {
             'delete': {'summary': 'Eliminar usuario (solo staff)', 'security': [{'BearerAuth': []}], 'responses': {'204': {'description': 'Usuario eliminado.'}}},
         },
         '/api/v1/me/': {'get': {'summary': 'Consultar mis datos personales', 'security': [{'BearerAuth': []}], 'responses': {'200': {'description': 'Perfil autenticado sin contraseña.'}}}},
+        '/api/v1/soap/numero-a-letras/': {'get': {'summary': 'Convertir un número con el servicio SOAP externo', 'description': 'Django consume NumberConversion SOAP de DataAccess y entrega el resultado. Requiere JWT. Query param numero: entero entre 0 y 4294967295.', 'security': [{'BearerAuth': []}], 'parameters': [{'name': 'numero', 'in': 'query', 'required': True, 'schema': {'type': 'integer', 'minimum': 0, 'maximum': 4294967295}}], 'responses': {'200': {'description': 'Resultado devuelto por el servicio SOAP.'}, '400': {'description': 'Número fuera de rango o ausente.'}, '503': {'description': 'Servicio SOAP no disponible.'}}}},
         '/api/token/': {'post': {'summary': 'Obtener token JWT', 'requestBody': {'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/Credentials'}}}}, 'responses': {'200': {'description': 'Tokens de acceso y actualización.'}}}},
         '/api/token/refresh/': {'post': {'summary': 'Renovar token JWT', 'requestBody': {'required': True, 'content': {'application/json': {'schema': {'$ref': '#/components/schemas/RefreshToken'}}}}, 'responses': {'200': {'description': 'Nuevo token de acceso.'}}}},
     },
