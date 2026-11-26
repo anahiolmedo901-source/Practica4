@@ -2,11 +2,106 @@
 
 Aplicación de Mercado Local con Django REST Framework y React. Incluye cuentas con inicio por correo electrónico, JWT, perfil protegido, productos de muestra de una API de terceros, consumo SOAP desde Django y Swagger.
 
-## Preparación local
+## Ejecución con Docker (recomendado)
+
+El proyecto se ejecuta con tres contenedores conectados por una red interna
+privada (`mercado_net`):
+
+| Servicio   | Contenedor         | Tecnología              | Puerto            |
+|------------|--------------------|-------------------------|-------------------|
+| `db`       | `mercado_db`       | MySQL 8.4               | interno (3306)    |
+| `backend`  | `mercado_backend`  | Django + DRF (Python)   | `localhost:8000`  |
+| `frontend` | `mercado_frontend` | React + Vite (Node.js)  | `localhost:5173`  |
+
+### Requisitos
+
+Solo se necesita [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+(incluye Docker Compose). No hace falta instalar Python, Node.js ni MySQL.
+
+### Estructura
+
+```
+django-project/
+├── backend/             # Django (Dockerfile, .dockerignore, requirements.txt)
+├── frontend/            # React (Dockerfile, .dockerignore, package.json)
+├── docker-compose.yml   # Orquesta db, backend y frontend
+└── .env.example         # Plantilla de variables de entorno
+```
+
+### Instalación
+
+1. Clona el repositorio y entra a la carpeta:
+
+   ```powershell
+   git clone https://github.com/anahiolmedo901-source/Practica4.git
+   cd Practica4
+   git switch dev
+   ```
+
+2. Crea el archivo `.env` a partir de la plantilla y cambia las contraseñas y la
+   clave secreta (el archivo `.env` no se sube a GitHub):
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+3. Construye y levanta todo con un solo comando:
+
+   ```powershell
+   docker compose up -d --build
+   ```
+
+4. Verifica que los tres contenedores estén en estado `Up`:
+
+   ```powershell
+   docker ps
+   ```
+
+5. Abre en el navegador:
+   - Frontend React: <http://localhost:5173>
+   - API Django (Swagger): <http://localhost:8000> (redirige a `/swagger/`)
+
+El backend espera a que MySQL esté listo (healthcheck) y aplica las migraciones
+automáticamente al arrancar. Para crear un administrador:
+
+```powershell
+docker compose exec backend python manage.py createsuperuser
+```
+
+### Persistencia de datos
+
+Los datos de MySQL se guardan en el volumen con nombre `mysql_data`, por lo que
+sobreviven al apagado de los contenedores:
+
+```powershell
+# 1. Registra un usuario en http://localhost:5173/register
+docker compose down       # apaga y elimina los contenedores (el volumen se conserva)
+docker compose up -d      # vuelve a levantarlos
+# 2. Inicia sesión con el mismo usuario en http://localhost:5173/login
+```
+
+También puede consultarse directamente en la base de datos:
+
+```powershell
+docker compose exec db sh -c 'mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" -e "SELECT id, email, first_name FROM products_user;"'
+```
+
+> `docker compose down -v` sí borra el volumen y con él todos los datos.
+
+### Comandos útiles
+
+```powershell
+docker compose logs -f backend                               # ver registros del backend
+docker compose exec -e DB_ENGINE=sqlite backend python manage.py test   # pruebas
+docker compose down                                           # detener todo
+```
+
+## Preparación local sin Docker
 
 ```powershell
 py -m venv venv
 .\venv\Scripts\Activate.ps1
+cd backend
 python -m pip install -r requirements.txt
 python manage.py migrate
 python manage.py createsuperuser
@@ -25,13 +120,13 @@ El cliente abre en `http://localhost:5173`. El backend permite CORS solo desde
 ese origen (y `127.0.0.1:5173`) de forma predeterminada. Si usas otro origen,
 configúralo explícitamente en `CORS_ALLOWED_ORIGINS`.
 
-La base de desarrollo es SQLite. El archivo `db.sqlite3` y el entorno virtual se excluyen de Git.
+Sin Docker (sin definir `DB_ENGINE=mysql`) la base de desarrollo es SQLite. El archivo `db.sqlite3` y el entorno virtual se excluyen de Git.
 En desarrollo se genera una clave local temporal. Para ejecutar fuera de desarrollo, define `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=false` y `DJANGO_ALLOWED_HOSTS` en el entorno; no guardes secretos en el repositorio.
 Consulta [SECURITY.md](SECURITY.md) para las prácticas de configuración y reporte de vulnerabilidades.
 
 ## Rutas principales
 
-- Swagger: `http://127.0.0.1:8000/swagger/`
+- Swagger: `http://localhost:8000/` (redirige a `/swagger/`)
 - Crear usuario: `POST /api/v1/users/`
 - CRUD de usuarios: `/api/v1/users/` (registro público; administración solo para staff con JWT)
 - Datos del usuario autenticado: `GET /api/v1/me/`

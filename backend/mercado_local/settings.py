@@ -33,9 +33,14 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'true').lower() == 'true'
 
-ALLOWED_HOSTS = os.environ.get(
-    'DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost,testserver'
-).split(',')
+# Dentro de Docker el backend recibe peticiones con distintos nombres de host
+# (localhost, nombre del servicio, IP del contenedor), por eso se permite '*'
+# de forma predeterminada. Puede restringirse con DJANGO_ALLOWED_HOSTS.
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
+    if host.strip()
+]
 
 
 # Application definition
@@ -99,8 +104,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mercado_local.wsgi.application'
 
 
-# Base local para que la práctica pueda ejecutarse sin configurar un servidor SQL.
-DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
+# Con Docker se usa MySQL (variables definidas en el archivo .env). Si no se
+# define DB_ENGINE=mysql, se usa SQLite para poder ejecutar el proyecto local.
+if os.environ.get('DB_ENGINE', 'sqlite').lower() == 'mysql':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('MYSQL_DATABASE', 'mercado_local'),
+            'USER': os.environ.get('MYSQL_USER', 'mercado'),
+            'PASSWORD': os.environ.get('MYSQL_PASSWORD', ''),
+            'HOST': os.environ.get('DB_HOST', 'db'),
+            'PORT': os.environ.get('DB_PORT', '3306'),
+            'OPTIONS': {'charset': 'utf8mb4'},
+        }
+    }
+else:
+    DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
 
 AUTH_USER_MODEL = 'products.User'
 SIMPLE_JWT = {'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15)}
@@ -148,6 +167,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # Email
