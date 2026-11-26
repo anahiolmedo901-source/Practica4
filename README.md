@@ -83,7 +83,7 @@ docker compose up -d      # vuelve a levantarlos
 También puede consultarse directamente en la base de datos:
 
 ```powershell
-docker compose exec db sh -c 'mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" -e "SELECT id, email, first_name FROM products_user;"'
+docker compose exec db sh -c 'mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -t -e \"SELECT id, email, first_name, last_name FROM products_user\" 2>/dev/null'
 ```
 
 > `docker compose down -v` sí borra el volumen y con él todos los datos.
