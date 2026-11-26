@@ -1,0 +1,18 @@
+{
+  "name": "mercado-local-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "dev": "vite", "build": "vite build", "preview": "vite preview" },
+  "dependencies": {
+    "formik": "^2.4.6",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "^7.18.5",
+    "react-toastify": "^10.0.6",
+    "semantic-ui-css": "^2.5.0",
+    "semantic-ui-react": "^2.1.5",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": { "@vitejs/plugin-react": "^4.4.1", "sass": "^1.86.3", "vite": "^6.2.5" }
+}

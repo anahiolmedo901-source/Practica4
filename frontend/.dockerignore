@@ -1,0 +1,19 @@
+# Dependencias y compilados (se generan dentro del contenedor)
+node_modules/
+dist/
+
+# Secretos locales
+.env
+.env.local
+.env.*.local
+
+# Editor, sistema y control de versiones
+.git/
+.gitignore
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+npm-debug.log*
+Dockerfile
+.dockerignore

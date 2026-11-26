@@ -1,0 +1,30 @@
+# Imagen base de Python para el backend Django
+FROM python:3.13-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+# Librerías del sistema necesarias para compilar mysqlclient y conectarse a MySQL
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        default-libmysqlclient-dev \
+        pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Dependencias de Python
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Código del proyecto
+COPY . .
+RUN chmod +x /app/entrypoint.sh
+
+EXPOSE 8000
+
+# Aplica migraciones y arranca Django escuchando en todas las interfaces
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

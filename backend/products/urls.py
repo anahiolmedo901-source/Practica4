@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import CategoryViewSet, ProductViewSet, UserViewSet, MyProfileView
+from .views import CategoryViewSet, ProductViewSet, UserViewSet, MyProfileView, SoapNumberView
 from rest_framework.routers import DefaultRouter
 from .views import precio_final
 
@@ -12,4 +12,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('products/<int:pk>/precio-final/', precio_final),
     path('me/', MyProfileView.as_view(), name='my-profile'),
+    path('soap/numero-a-letras/', SoapNumberView.as_view(), name='soap-number-to-words'),
 ]

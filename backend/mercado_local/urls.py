@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import RedirectView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -23,6 +24,8 @@ from rest_framework_simplejwt.views import (
 
 
 urlpatterns = [
+    # La raíz del backend abre la documentación Swagger.
+    path('', RedirectView.as_view(pattern_name='swagger-ui', permanent=False)),
     path('admin/', admin.site.urls),
     path('api/v1/', include('products.urls')),
     # Rutas para JWT
